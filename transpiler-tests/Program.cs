@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using GryphonSharpTranspiler;
 
 namespace transpiler_tests
 {
@@ -6,7 +8,9 @@ namespace transpiler_tests
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.WriteLine(Path.GetFullPath("./"));
+            // TranspilerAPI.TranspileScripts("./Samples/GSProject.gsproj");
+            // GSharp.System.GScript sc1 = JsonConvert.DeserializeObject<GSharp.System.GScript>("");
         }
     }
 }

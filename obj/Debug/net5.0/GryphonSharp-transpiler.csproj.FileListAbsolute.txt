@@ -1,0 +1,5 @@
+C:\Users\kilanth\Documents\.git\GryphonSharp\GryphonSharp-transpiler\obj\Debug\net5.0\GryphonSharp-transpiler.csprojAssemblyReference.cache
+C:\Users\kilanth\Documents\.git\GryphonSharp\GryphonSharp-transpiler\obj\Debug\net5.0\GryphonSharp-transpiler.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\kilanth\Documents\.git\GryphonSharp\GryphonSharp-transpiler\obj\Debug\net5.0\GryphonSharp-transpiler.AssemblyInfoInputs.cache
+C:\Users\kilanth\Documents\.git\GryphonSharp\GryphonSharp-transpiler\obj\Debug\net5.0\GryphonSharp-transpiler.AssemblyInfo.cs
+C:\Users\kilanth\Documents\.git\GryphonSharp\GryphonSharp-transpiler\obj\Debug\net5.0\GryphonSharp-transpiler.csproj.CoreCompileInputs.cache

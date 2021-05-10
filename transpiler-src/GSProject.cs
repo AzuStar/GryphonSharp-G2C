@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace GryphonSharpTranspiler
 {
@@ -9,10 +11,9 @@ namespace GryphonSharpTranspiler
         public string src;
         public string bin;
 
-        [OnDeserialized]
-        private void PostDesirialize()
-        {
-            src = Path.GetFullPath(src);
-        }
+        [JsonIgnore]
+        public string root;
+        [JsonIgnore]
+        public List<GSFile> files = new List<GSFile>();
     }
 }

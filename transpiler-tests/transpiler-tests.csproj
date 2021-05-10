@@ -1,13 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <ItemGroup>
-    <ProjectReference Include="..\GryphonSharp-transpiler.csproj" />
-  </ItemGroup>
-
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>transpiler_tests</RootNamespace>
   </PropertyGroup>
+
+
+  <ItemGroup>
+         <ProjectReference Include = "..\transpiler-src\GryphonSharp-transpiler.csproj" />
+    </ItemGroup>
 
 </Project>

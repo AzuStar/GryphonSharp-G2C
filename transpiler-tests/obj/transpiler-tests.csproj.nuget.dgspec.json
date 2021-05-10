@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\kilanth\\Documents\\.git\\GryphonSharp\\GryphonSharp-transpiler\\transpiler-tests\\transpiler-tests.csproj": {}
+    "C:\\Users\\kilanth\\Documents\\.git\\GryphonSharp\\GryphonSharp-transpiler\\transpiler-tests\\Transpiler-tests.csproj": {}
   },
   "projects": {
-    "C:\\Users\\kilanth\\Documents\\.git\\GryphonSharp\\GryphonSharp-transpiler\\GryphonSharp-transpiler.csproj": {
+    "C:\\Users\\kilanth\\Documents\\.git\\GryphonSharp\\GryphonSharp-transpiler\\transpiler-src\\GryphonSharp-transpiler.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\kilanth\\Documents\\.git\\GryphonSharp\\GryphonSharp-transpiler\\GryphonSharp-transpiler.csproj",
+        "projectUniqueName": "C:\\Users\\kilanth\\Documents\\.git\\GryphonSharp\\GryphonSharp-transpiler\\transpiler-src\\GryphonSharp-transpiler.csproj",
         "projectName": "GryphonSharp-transpiler",
-        "projectPath": "C:\\Users\\kilanth\\Documents\\.git\\GryphonSharp\\GryphonSharp-transpiler\\GryphonSharp-transpiler.csproj",
+        "projectPath": "C:\\Users\\kilanth\\Documents\\.git\\GryphonSharp\\GryphonSharp-transpiler\\transpiler-src\\GryphonSharp-transpiler.csproj",
         "packagesPath": "C:\\Users\\kilanth\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\kilanth\\Documents\\.git\\GryphonSharp\\GryphonSharp-transpiler\\obj\\",
+        "outputPath": "C:\\Users\\kilanth\\Documents\\.git\\GryphonSharp\\GryphonSharp-transpiler\\transpiler-src\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\kilanth\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -60,16 +60,16 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.202\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\kilanth\\Documents\\.git\\GryphonSharp\\GryphonSharp-transpiler\\transpiler-tests\\transpiler-tests.csproj": {
+    "C:\\Users\\kilanth\\Documents\\.git\\GryphonSharp\\GryphonSharp-transpiler\\transpiler-tests\\Transpiler-tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\kilanth\\Documents\\.git\\GryphonSharp\\GryphonSharp-transpiler\\transpiler-tests\\transpiler-tests.csproj",
-        "projectName": "transpiler-tests",
-        "projectPath": "C:\\Users\\kilanth\\Documents\\.git\\GryphonSharp\\GryphonSharp-transpiler\\transpiler-tests\\transpiler-tests.csproj",
+        "projectUniqueName": "C:\\Users\\kilanth\\Documents\\.git\\GryphonSharp\\GryphonSharp-transpiler\\transpiler-tests\\Transpiler-tests.csproj",
+        "projectName": "Transpiler-tests",
+        "projectPath": "C:\\Users\\kilanth\\Documents\\.git\\GryphonSharp\\GryphonSharp-transpiler\\transpiler-tests\\Transpiler-tests.csproj",
         "packagesPath": "C:\\Users\\kilanth\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\kilanth\\Documents\\.git\\GryphonSharp\\GryphonSharp-transpiler\\transpiler-tests\\obj\\",
         "projectStyle": "PackageReference",
@@ -88,8 +88,8 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "C:\\Users\\kilanth\\Documents\\.git\\GryphonSharp\\GryphonSharp-transpiler\\GryphonSharp-transpiler.csproj": {
-                "projectPath": "C:\\Users\\kilanth\\Documents\\.git\\GryphonSharp\\GryphonSharp-transpiler\\GryphonSharp-transpiler.csproj"
+              "C:\\Users\\kilanth\\Documents\\.git\\GryphonSharp\\GryphonSharp-transpiler\\transpiler-src\\GryphonSharp-transpiler.csproj": {
+                "projectPath": "C:\\Users\\kilanth\\Documents\\.git\\GryphonSharp\\GryphonSharp-transpiler\\transpiler-src\\GryphonSharp-transpiler.csproj"
               }
             }
           }
@@ -118,7 +118,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.202\\RuntimeIdentifierGraph.json"
         }
       }
     }

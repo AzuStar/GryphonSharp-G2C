@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace GryphonSharpTranspiler
 {
-    public class GSProject
+    internal class GSProject : IGSProject
     {
         public int version;
         public string src;
@@ -15,5 +15,13 @@ namespace GryphonSharpTranspiler
         public string root;
         [JsonIgnore]
         public List<GSFile> files = new List<GSFile>();
+
+        public void TranspileScripts()
+        {
+            foreach (GSFile fil in files)
+            {
+                
+            }
+        }
     }
 }

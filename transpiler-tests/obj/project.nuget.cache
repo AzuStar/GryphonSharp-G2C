@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "uE53hPKYtQ1ubAhzFUK/cgquPRiac9tfHUsQcMUsSoUsEfsT10pGEqhdfOVYJeMSUViKS/UO1SBseex8zyagJA==",
+  "dgSpecHash": "x40NKrDPU11MXGRbtmoktM7TWQHiL134j/bMnvc3fngAihAas0AXPCs+UivXFpFPPI8p8kn1alz9XgDqSejavg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\kilanth\\Documents\\.git\\GryphonSharp\\GryphonSharp-transpiler\\transpiler-tests\\Transpiler-tests.csproj",
+  "projectFilePath": "/Users/Azureus/Documents/Git/GryphonSharp/GryphonSharp-transpiler/transpiler-tests/transpiler-tests.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\kilanth\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512"
+    "/Users/Azureus/.nuget/packages/newtonsoft.json/13.0.1/newtonsoft.json.13.0.1.nupkg.sha512"
   ],
   "logs": []
 }

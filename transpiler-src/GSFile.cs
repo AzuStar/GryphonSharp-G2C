@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace GryphonSharpTranspiler
 {
-    public class GSFile
+    internal class GSFile
     {
         public string FileName;
         public string NameSpacePath;

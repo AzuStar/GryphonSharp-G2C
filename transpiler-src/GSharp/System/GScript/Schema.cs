@@ -1,6 +1,6 @@
 namespace GSharp.System.GScript
 {
-    public class Schema
+    public sealed class Schema
     {
         public Type type;
         // parents

@@ -2,14 +2,21 @@ using System.Collections.Generic;
 
 namespace GSharp.System.Data
 {
-    public class DataModel
+    public sealed class DataModel
     {   
         public Type type;
         
     }
 
     public enum Type : int{
-        Value, localValue, 
+        /// <summary>
+        /// 
+        /// </summary>
+        Value,
+        /// <summary>
+        /// 
+        /// </summary> 
+        localValue, 
     }
 
 }

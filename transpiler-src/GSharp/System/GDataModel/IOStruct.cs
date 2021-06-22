@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace GSharp.System.GNode
 {
-    public class IOStruct
+    public sealed class IOStruct
     {   
         public Type type;
         public List<object> args;

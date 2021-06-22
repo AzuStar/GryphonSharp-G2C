@@ -9,7 +9,7 @@ namespace transpiler_tests
     {
         static void Main(string[] args)
         {
-            IGSProject proj = TranspilerAPI.TranspilerProject(Path.GetFullPath("./HelloWorldSample/HWS.gsproj"));
+            IGSProject proj = TranspilerAPI.LoadProject(Path.GetFullPath("./HelloWorldSample/HWS.gsproj"));
             
             proj.TranspileScripts();
             // TranspilerAPI.TranspileScripts("./Samples/GSProject.gsproj");

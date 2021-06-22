@@ -8,7 +8,7 @@ namespace GryphonSharpTranspiler
 {
     public static class TranspilerAPI
     {
-        public static IGSProject TranspilerProject(string GSProjFile)
+        public static IGSProject LoadProject(string GSProjFile)
         {
             if (!File.Exists(GSProjFile)) throw new Exception("File doesn't exist:" + GSProjFile);
             String projectLocation = Directory.GetParent(GSProjFile).FullName;

@@ -1,3 +1,5 @@
+using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
@@ -18,9 +20,13 @@ namespace GryphonSharpTranspiler
 
         public void TranspileScripts()
         {
+            CodeDomProvider provider = CodeDomProvider.CreateProvider("CSharp");
             foreach (GSFile fil in files)
             {
-                
+                string sourceFile = fil.GenerateSource(provider);
+                string writepath = Path.Join(bin, fil.NamespacePath);
+                Directory.CreateDirectory(writepath);
+                File.WriteAllText(Path.Join(writepath, fil.FileName+".cs"), sourceFile);
             }
         }
     }

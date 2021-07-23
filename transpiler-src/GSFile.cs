@@ -53,7 +53,7 @@ namespace GryphonSharpTranspiler
 
                 Node currentNode = codeEntry.First().Value;
 
-                while (currentNode.execOut != null || currentNode.type != GSharp.System.GNode.Type.executionExit)
+                while (currentNode.execution != -1 || currentNode.type != GSharp.System.GNode.Type.executionExit)
                 {
                     if (currentNode.type == GSharp.System.GNode.Type.callInstance || currentNode.type == GSharp.System.GNode.Type.callStatic)
                     {
@@ -80,7 +80,7 @@ namespace GryphonSharpTranspiler
                         entry.Statements.Add(call);
 
                     }
-                    currentNode = ScriptBody.code[currentNode.execOut[0]];
+                    currentNode = ScriptBody.code[currentNode.execution];
                 }
 
                 mainClass.Members.Add(entry);

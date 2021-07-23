@@ -8,9 +8,7 @@
         "0": {
             "type": 0,
             "target": "Main",
-            "execOut": [
-                2
-            ],
+            "execution": 2,
             "outputs": [
                 1
             ]
@@ -22,13 +20,10 @@
             "type": 4,
             "reference": "System.Console",
             "target": "WriteLine",
-            "execOut": [
-                4
-            ],
+            "execution": 4,
             "inputs": [
                 3
-            ],
-            "outputs": []
+            ]
         },
         "3": {
             "type": 3,
@@ -37,8 +32,7 @@
             ]
         },
         "4": {
-            "type": 100,
-            "inputs": []
+            "type": 100
         }
     }
 }

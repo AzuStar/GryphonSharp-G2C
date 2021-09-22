@@ -55,7 +55,7 @@ namespace GryphonSharpTranspiler
 
                 while (currentNode.execution != -1 || currentNode.type != GSharp.System.GNode.Type.executionExit)
                 {
-                    if (currentNode.type == GSharp.System.GNode.Type.callInstance || currentNode.type == GSharp.System.GNode.Type.callStatic)
+                    if (currentNode.type == GSharp.System.GNode.Type.invokeFunctionCall || currentNode.type == GSharp.System.GNode.Type.callStatic)
                     {
                         List<CodeExpression> inputs = new List<CodeExpression>();
                         foreach (int input in currentNode.inputs)

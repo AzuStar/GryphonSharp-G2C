@@ -3,14 +3,13 @@ namespace GSharp.System.GNode
     public enum Type : int
     {
         /// <summary>
-        /// The entry node into script.<br />
-        /// Fields:
-        /// execOut
-        /// outputs
+        /// The entry node into a function <see cref="Node.target"/>.<br />
+        /// Parsed arguments (a, b...) accessible through <see cref="Node.outputs"/>.<br />
+        /// To execute next block set value of <see cref="Node.execution"/>.<br />
         /// </summary> 
         executionEnter = 0,
         /// <summary>
-        /// Performs invocation on Instance Reference
+        /// Performs invocation of <see cref="Node.reference"/>.<see cref="Node."/>
         /// <br />
         /// Fields:
         /// ref
@@ -19,7 +18,7 @@ namespace GSharp.System.GNode
         /// inputs
         /// outputs
         /// </summary>
-        callInstance,
+        invokeFunctionCall,
         /// <summary>
         /// A special hidden node that play role that of function output reference. E.g. Sum(2, 3) -> reference <br />
         /// </summary>

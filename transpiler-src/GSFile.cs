@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Channels;
-using GSharp.System.GNode;
+using GSharp.System.GCode;
 using GSharp.System.GScript;
 using Newtonsoft.Json;
 
@@ -43,7 +43,7 @@ namespace GryphonSharpTranspiler
 
             IEnumerable<KeyValuePair<int, Node>> funcEntries = ScriptBody.code.Where((kv) => kv.Value.type == 0);
 
-            IEnumerable<KeyValuePair<int, Node>> codeEntry = funcEntries.Where((kv) => kv.Value.target == "Main"); // first doesnt cut, dont touch
+            IEnumerable<KeyValuePair<int, Node>> codeEntry = funcEntries.Where((kv) => kv.Value.target == "Main"); // first doesnt work, dont touch
 
             funcEntries = funcEntries.Where((kv) => kv.Value.target != "Main");
 
@@ -53,22 +53,22 @@ namespace GryphonSharpTranspiler
 
                 Node currentNode = codeEntry.First().Value;
 
-                while (currentNode.execution != -1 || currentNode.type != GSharp.System.GNode.Type.executionExit)
+                while (currentNode.execution != -1 || currentNode.type != GSharp.System.GCode.Type.executionExit)
                 {
-                    if (currentNode.type == GSharp.System.GNode.Type.invokeFunctionCall || currentNode.type == GSharp.System.GNode.Type.callStatic)
+                    if (currentNode.type == GSharp.System.GCode.Type.invokeFunctionCall || currentNode.type == GSharp.System.GCode.Type.callStatic)
                     {
                         List<CodeExpression> inputs = new List<CodeExpression>();
                         foreach (int input in currentNode.inputs)
                         {
                             Node n = ScriptBody.code[input];
-                            if(n.type == GSharp.System.GNode.Type.primitiveValue){
+                            if(n.type == GSharp.System.GCode.Type.primitiveValue){
                                 inputs.Add(new CodePrimitiveExpression(n.outputs[0]));
                             }
                         }
                         CodeMethodInvokeExpression call;
                         CodeTypeReferenceExpression refExpr;
 
-                        if (currentNode.type == GSharp.System.GNode.Type.callStatic)
+                        if (currentNode.type == GSharp.System.GCode.Type.callStatic)
                         {
                             refExpr = new CodeTypeReferenceExpression(currentNode.reference);
                         }
@@ -98,6 +98,7 @@ namespace GryphonSharpTranspiler
                 provider.GenerateCodeFromCompileUnit(codeUnit, sw, new CodeGeneratorOptions()
                 {
                     IndentString = "   ",
+                    VerbatimOrder = true,
                 });
                 srcText = sw.ToString();
             }

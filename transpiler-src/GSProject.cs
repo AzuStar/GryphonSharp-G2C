@@ -25,7 +25,7 @@ namespace GryphonSharpTranspiler
             foreach (GSFile fil in files)
             {
                 string sourceFile = fil.GenerateSource(provider);
-                string writepath = Path.Join(bin, fil.NamespacePath);
+                string writepath = Path.Join(bin, fil.NamespaceDirectory);
                 Directory.CreateDirectory(writepath);
                 File.WriteAllText(Path.Join(writepath, fil.FileName+".cs"), sourceFile);
             }

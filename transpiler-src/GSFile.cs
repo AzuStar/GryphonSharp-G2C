@@ -20,7 +20,8 @@ namespace GryphonSharpTranspiler
     internal class GSFile
     {
         public string FileName;
-        public string NamespacePath;
+        public string NamespaceCode;
+        public string NamespaceDirectory;
         /// <summary>
         /// Script's body
         /// </summary>
@@ -42,15 +43,15 @@ namespace GryphonSharpTranspiler
             }
             ScriptBody.PostDeserialize();
             FileName = Path.GetFileNameWithoutExtension(path);
-            NamespacePath = Path.Combine(project.rootNamespace, Path.GetRelativePath(project.src, Path.GetDirectoryName(path))); // testing, so root for now
-
+            NamespaceDirectory = Path.TrimEndingDirectorySeparator(Path.Combine(project.rootNamespace, Path.GetRelativePath(project.src, Path.GetDirectoryName(path))));
+            NamespaceCode = NamespaceDirectory.Replace(Path.DirectorySeparatorChar, '.').Trim(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, '.');
         }
 
         public String GenerateSource(CodeDomProvider provider)
         {
             CodeCompileUnit codeUnit = new CodeCompileUnit();
 
-            CodeNamespace ns = new CodeNamespace(NamespacePath);
+            CodeNamespace ns = new CodeNamespace(NamespaceCode);
             codeUnit.Namespaces.Add(ns);
 
             CodeTypeDeclaration mainClass = new CodeTypeDeclaration(FileName);

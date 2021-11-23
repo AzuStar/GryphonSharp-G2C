@@ -8,6 +8,7 @@ using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading.Channels;
 using GSharp.GSIL.GCode;
+using GSharp.GSIL.GData;
 using GSharp.GSIL.GScript;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -32,9 +33,10 @@ namespace GryphonSharpTranspiler
             //     MissingMemberHandling = MissingMemberHandling.Ignore
             // };
             ScriptBody = JsonConvert.DeserializeObject<Script>(File.ReadAllText(path));
+            ScriptBody.PostDeserialize();
             string[] split = path.Split("/");
             FileName = split[^1];
-            FileName = new Regex("(.+)\\.gs$").Match(FileName).Groups[1].ToString(); 
+            FileName = new Regex("(.+)\\.gs$").Match(FileName).Groups[1].ToString();
             NamespacePath = "Root"; // testing, so root for now
 
         }
@@ -49,9 +51,9 @@ namespace GryphonSharpTranspiler
             CodeTypeDeclaration mainClass = new CodeTypeDeclaration(FileName);
             ns.Types.Add(mainClass);
 
-            IEnumerable<KeyValuePair<int, Node>> funcEntries = ScriptBody.codeNodes.Where((kv) => kv.Value.type == Type.executionEnter);
+            IEnumerable<KeyValuePair<int, GSharp.GSIL.GCode.Node>> funcEntries = ScriptBody.codeNodes.Where((kv) => kv.Value.type == GSharp.GSIL.GCode.Type.executionEnter);
 
-            IEnumerable<KeyValuePair<int, Node>> codeEntry = funcEntries.Where((kv) => kv.Value.target == "Main"); // first doesnt work, dont touch
+            IEnumerable<KeyValuePair<int, GSharp.GSIL.GCode.Node>> codeEntry = funcEntries.Where((kv) => kv.Value.target == "Main"); // first doesnt work, dont touch
 
             funcEntries = funcEntries.Where((kv) => kv.Value.target != "Main");
 
@@ -59,53 +61,21 @@ namespace GryphonSharpTranspiler
             {
                 CodeEntryPointMethod entry = new CodeEntryPointMethod();
 
-                Node currentNode = codeEntry.First().Value;
+                GSharp.GSIL.GCode.Node currentNode = codeEntry.First().Value;
 
-                while (currentNode.execution != -1 || currentNode.type != GSharp.GSIL.GCode.Type.executionExit)
-                {
-                    switch(currentNode.type){
-                        case Type.executionEnter:
-
-                        default:
-                        Console.Error("TypeId "+currentNode.type+" not found!");
-                    }
-                    if (currentNode.type == GSharp.GSIL.GCode.Type.invokeInstanceCall || currentNode.type == GSharp.GSIL.GCode.Type.invokeStaticCall)
-                    {
-                        // collect any arguments
-                        List<CodeExpression> inputs = new List<CodeExpression>();
-                        foreach (int input in currentNode.inputs)
-                        {
-                            GSharp.GSIL.GData.Node n = ScriptBody.dataNodes[input];
-                            if (n.type == GSharp.GSIL.GData.Type.primitiveValue)
-                            {
-                                inputs.Add(new CodePrimitiveExpression(n.value));
-                            }
-                        }
-                        CodeMethodInvokeExpression call;
-                        CodeTypeReferenceExpression refExpr;
-
-                        if (currentNode.type == GSharp.GSIL.GCode.Type.invokeStaticCall)
-                        {
-                            refExpr = new CodeTypeReferenceExpression(currentNode.reference);
-                        }
-                        else // dont yet handle instances and function calls
-                        {
-                            refExpr = new CodeTypeReferenceExpression("");
-                        }
-                        call = new CodeMethodInvokeExpression(refExpr, currentNode.target, inputs.ToArray());
-                        entry.Statements.Add(call);
-
-                    }
-                    currentNode = ScriptBody.codeNodes[currentNode.execution];
-                }
+                FunctionBuilder(entry, currentNode);
 
                 mainClass.Members.Add(entry);
             }
 
-            foreach (KeyValuePair<int, Node> kv in funcEntries)
+            foreach (KeyValuePair<int, GSharp.GSIL.GCode.Node> kv in funcEntries)
             {
                 CodeMemberMethod func = new CodeMemberMethod();
                 func.Name = kv.Value.target;
+                FunctionBuilder(func, kv.Value);
+                func.ReturnType = new CodeTypeReference(typeof(int));
+                func.Parameters.Add(new CodeParameterDeclarationExpression(typeof(int), "test"));
+                mainClass.Members.Add(func);
             }
 
             string srcText;
@@ -121,5 +91,88 @@ namespace GryphonSharpTranspiler
             return srcText;
         }
 
+        private CodeExpression ResolveDataToCodeExpression(GSharp.GSIL.GData.Node dataNode)
+        {
+            CodeExpression ce = null;
+            switch (dataNode.type)
+            {
+                case GSharp.GSIL.GData.Type.primitiveValue:
+                    ce = new CodePrimitiveExpression(dataNode.value);
+                    break;
+                case GSharp.GSIL.GData.Type.localValue:
+                    ce = new CodeVariableReferenceExpression("auto_" + (uint)FileName.GetHashCode() + dataNode.id.ToString());
+                    break;
+                default:
+                    Console.WriteLine("DataTypeId: " + dataNode.type + " cannot be transformed.");
+                    break;
+            }
+
+            return ce;
+        }
+
+        private GSharp.GSIL.GCode.Node FunctionBuilder(CodeMemberMethod func, GSharp.GSIL.GCode.Node firstNode)
+        {
+            GSharp.GSIL.GCode.Node currentNode = firstNode;
+            while (currentNode.execution != -1)
+            {
+                switch (currentNode.type)
+                {
+                    case GSharp.GSIL.GCode.Type.executionEnter:
+                        // SECTION INCOMPLETE
+                        break;
+                    case GSharp.GSIL.GCode.Type.invokeOperatorCall:
+                        CodeBinaryOperatorExpression cbo = new CodeBinaryOperatorExpression();
+                        cbo.Operator = OperatorType.String2BinaryOperator(currentNode.target);
+                        cbo.Left = ResolveDataToCodeExpression(ScriptBody.dataNodes[currentNode.inputs[0]]);
+                        cbo.Right = ResolveDataToCodeExpression(ScriptBody.dataNodes[currentNode.inputs[1]]);
+                        if (currentNode.inputs.Count > 2)
+                        {
+                            for (int i = 2; i < currentNode.inputs.Count; i++)
+                            {
+                                CodeBinaryOperatorExpression prevcbo = cbo;
+                                cbo = new CodeBinaryOperatorExpression();
+                                cbo.Operator = OperatorType.String2BinaryOperator(currentNode.target);
+                                cbo.Left = prevcbo;
+                                cbo.Right = ResolveDataToCodeExpression(ScriptBody.dataNodes[currentNode.inputs[1]]);
+                            }
+                        }
+                        func.Statements.Add(cbo);
+                        break;
+                    case GSharp.GSIL.GCode.Type.invokeStaticCall:
+                    // SECTION INCOMPLETE
+                    case GSharp.GSIL.GCode.Type.invokeInstanceCall:
+                        // SECTION INCOMPLETE
+                        // collect any arguments
+                        List<CodeExpression> inputs = new List<CodeExpression>();
+                        foreach (int input in currentNode.inputs)
+                        {
+                            inputs.Add(ResolveDataToCodeExpression(ScriptBody.dataNodes[input]));
+                        }
+                        CodeMethodInvokeExpression call;
+                        CodeTypeReferenceExpression refExpr;
+
+                        if (currentNode.type == GSharp.GSIL.GCode.Type.invokeStaticCall)
+                        {
+                            refExpr = new CodeTypeReferenceExpression(currentNode.reference);
+                        }
+                        else // dont yet handle instances and function calls
+                        {
+                            refExpr = new CodeTypeReferenceExpression("");
+                        }
+                        call = new CodeMethodInvokeExpression(refExpr, currentNode.target, inputs.ToArray());
+                        func.Statements.Add(call);
+                        break;
+                    case GSharp.GSIL.GCode.Type.executionExit:
+                        // SECTION INCOMPLETE
+                        func.Statements.Add(new CodeMethodReturnStatement(ResolveDataToCodeExpression(ScriptBody.dataNodes[currentNode.inputs[0]])));
+                        break;
+                    default:
+                        Console.WriteLine("NodeTypeId " + currentNode.type + " cannot be transformed.");
+                        break;
+                }
+                currentNode = ScriptBody.codeNodes[currentNode.execution];
+            }
+            return currentNode;
+        }
     }
 }

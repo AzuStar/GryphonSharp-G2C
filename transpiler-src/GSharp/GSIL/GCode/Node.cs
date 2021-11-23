@@ -6,6 +6,7 @@ namespace GSharp.GSIL.GCode
 {
     public sealed class Node
     {
+        public int id;
         public Type type;
         public String? reference;
         public String? target;

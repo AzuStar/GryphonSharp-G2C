@@ -5,6 +5,7 @@ namespace GSharp.GSIL.GData
 {
     public sealed class Node
     {   
+        public int id;
         public Type type;
         /// <summary>
         /// Primitive value stored at this node

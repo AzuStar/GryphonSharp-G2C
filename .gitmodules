@@ -1,0 +1,3 @@
+[submodule "GryphonSharp-Samples"]
+	path = GryphonSharp-Samples
+	url = https://github.com/AzuStar/GryphonSharp-Samples

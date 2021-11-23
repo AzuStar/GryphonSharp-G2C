@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Channels;
 using GSharp.GSIL.GCode;
@@ -25,7 +26,7 @@ namespace GryphonSharpTranspiler
         /// </summary>
         public Script ScriptBody;
 
-        public GSFile(string path)
+        public GSFile(GSProject project, string path)
         {
             // keep for debugging
             // ITraceWriter tracert = new MemoryTraceWriter();
@@ -34,11 +35,14 @@ namespace GryphonSharpTranspiler
             //     MissingMemberHandling = MissingMemberHandling.Ignore
             // };
             ScriptBody = JsonConvert.DeserializeObject<Script>(File.ReadAllText(path));
+            if (ScriptBody == null)
+            {
+                Debug.Fail("File " + Path.GetRelativePath(project.src, path) + " in source folder could not be read: " + project.src);
+                return;
+            }
             ScriptBody.PostDeserialize();
-            string[] split = path.Split("/");
-            FileName = split[^1];
-            FileName = new Regex("(.+)\\.gs$").Match(FileName).Groups[1].ToString();
-            NamespacePath = "Root"; // testing, so root for now
+            FileName = Path.GetFileNameWithoutExtension(path);
+            NamespacePath = Path.Combine(project.rootNamespace, Path.GetRelativePath(project.src, Path.GetDirectoryName(path))); // testing, so root for now
 
         }
 

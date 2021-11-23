@@ -12,6 +12,7 @@ namespace GryphonSharpTranspiler
         public int version;
         public string src;
         public string bin;
+        public string rootNamespace = "Root";
 
         [JsonIgnore]
         public string root;

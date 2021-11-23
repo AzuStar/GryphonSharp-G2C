@@ -18,7 +18,11 @@ namespace GryphonSharpTranspiler
             project.bin = Path.GetFullPath(project.root + "/" + project.bin);
             List<string> srcFiles = Utils.IterateFolder(project.src);
             foreach (string s in srcFiles)
-                project.files.Add(new GSFile(s));
+            {
+                GSFile fil = new GSFile(project, s);
+                if (fil.ScriptBody != null)
+                    project.files.Add(fil);
+            }
 
             return project;
         }

@@ -27,6 +27,8 @@ namespace GryphonSharpTranspiler
         /// </summary>
         public Script ScriptBody;
 
+        public Dictionary<int, CodeExpression> MatchedExpressions = new Dictionary<int, CodeExpression>();
+
         public GSFile(GSProject project, string path)
         {
             // keep for debugging
@@ -77,10 +79,9 @@ namespace GryphonSharpTranspiler
             foreach (KeyValuePair<int, GSharp.GSIL.GCode.Node> kv in funcEntries)
             {
                 CodeMemberMethod func = new CodeMemberMethod();
+                func.Attributes = MemberAttributes.Static | MemberAttributes.Public;
                 func.Name = kv.Value.target;
                 FunctionBuilder(func, kv.Value);
-                func.ReturnType = new CodeTypeReference(typeof(int));
-                func.Parameters.Add(new CodeParameterDeclarationExpression(typeof(int), "test"));
                 mainClass.Members.Add(func);
             }
 
@@ -97,6 +98,15 @@ namespace GryphonSharpTranspiler
             return srcText;
         }
 
+        private CodeParameterDeclarationExpression ResolveDataToParameterExpression(GSharp.GSIL.GData.Node dataNode)
+        {
+            if(dataNode.type==0) return null;
+            // this can only be type 1
+            CodeParameterDeclarationExpression cpd = new CodeParameterDeclarationExpression();
+            cpd.Type = new CodeTypeReference(dataNode.vmType);
+            cpd.Name = "auto_" + (uint)FileName.GetHashCode() + dataNode.id.ToString();
+            return cpd;
+        }
         private CodeExpression ResolveDataToCodeExpression(GSharp.GSIL.GData.Node dataNode)
         {
             CodeExpression ce = null;
@@ -104,9 +114,17 @@ namespace GryphonSharpTranspiler
             {
                 case GSharp.GSIL.GData.Type.primitiveValue:
                     ce = new CodePrimitiveExpression(dataNode.value);
+                    dataNode.vmType = dataNode.value.GetType();
                     break;
                 case GSharp.GSIL.GData.Type.localValue:
-                    ce = new CodeVariableReferenceExpression("auto_" + (uint)FileName.GetHashCode() + dataNode.id.ToString());
+                    if (MatchedExpressions.ContainsKey(dataNode.id))
+                    {
+                        ce = MatchedExpressions[dataNode.id];
+                    }
+                    else
+                    {
+                        ce = new CodeVariableReferenceExpression("auto_" + (uint)FileName.GetHashCode() + dataNode.id.ToString());
+                    }
                     break;
                 default:
                     Debug.Fail("DataTypeId: " + dataNode.type + " cannot be transformed.");
@@ -115,16 +133,20 @@ namespace GryphonSharpTranspiler
 
             return ce;
         }
-
         private GSharp.GSIL.GCode.Node FunctionBuilder(CodeMemberMethod func, GSharp.GSIL.GCode.Node firstNode)
         {
             GSharp.GSIL.GCode.Node currentNode = firstNode;
-            while (currentNode.execution != -1)
+            while (true)
             {
                 switch (currentNode.type)
                 {
                     case GSharp.GSIL.GCode.Type.executionEnter:
                         // SECTION INCOMPLETE
+                        if (currentNode.outputs == null) break;
+                        foreach (int key in currentNode.outputs)
+                        {
+                            func.Parameters.Add(ResolveDataToParameterExpression(ScriptBody.dataNodes[key]));
+                        }
                         break;
                     case GSharp.GSIL.GCode.Type.invokeOperatorCall:
                         CodeBinaryOperatorExpression cbo = new CodeBinaryOperatorExpression();
@@ -142,7 +164,9 @@ namespace GryphonSharpTranspiler
                                 cbo.Right = ResolveDataToCodeExpression(ScriptBody.dataNodes[currentNode.inputs[1]]);
                             }
                         }
-                        func.Statements.Add(cbo);
+                        // record the output type
+                        ScriptBody.dataNodes[currentNode.outputs[0]].vmType = ScriptBody.dataNodes[currentNode.outputs[0]].vmType;
+                        MatchedExpressions.Add(currentNode.outputs[0], cbo);
                         break;
                     case GSharp.GSIL.GCode.Type.invokeStaticCall:
                     // SECTION INCOMPLETE
@@ -166,16 +190,30 @@ namespace GryphonSharpTranspiler
                             refExpr = new CodeTypeReferenceExpression("");
                         }
                         call = new CodeMethodInvokeExpression(refExpr, currentNode.target, inputs.ToArray());
-                        func.Statements.Add(call);
+                        // When there are outputs save them before dumping function into pipeline
+                        if (currentNode.outputs != null)
+                        {
+                            CodeVariableDeclarationStatement cvd = new CodeVariableDeclarationStatement();
+                            cvd.Name = "auto_" + (uint)FileName.GetHashCode() + currentNode.outputs[0].ToString();
+                            cvd.InitExpression = call;
+                            cvd.Type = new CodeTypeReference(ScriptBody.dataNodes[currentNode.outputs[0]].vmType);
+                            func.Statements.Add(cvd);
+                        }
+                        else
+                            func.Statements.Add(call);
                         break;
                     case GSharp.GSIL.GCode.Type.executionExit:
                         // SECTION INCOMPLETE
-                        func.Statements.Add(new CodeMethodReturnStatement(ResolveDataToCodeExpression(ScriptBody.dataNodes[currentNode.inputs[0]])));
+                        if (currentNode.inputs == null) break;
+                        GSharp.GSIL.GData.Node funcReturn = ScriptBody.dataNodes[currentNode.inputs[0]];
+                        func.Statements.Add(new CodeMethodReturnStatement(ResolveDataToCodeExpression(funcReturn)));
+                        func.ReturnType = func.ReturnType = new CodeTypeReference(funcReturn.vmType);
                         break;
                     default:
                         Debug.Fail("NodeTypeId " + currentNode.type + " cannot be transformed.");
                         break;
                 }
+                if (currentNode.execution == -1) break;
                 currentNode = ScriptBody.codeNodes[currentNode.execution];
             }
             return currentNode;

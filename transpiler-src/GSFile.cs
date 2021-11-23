@@ -2,6 +2,7 @@ using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -103,7 +104,7 @@ namespace GryphonSharpTranspiler
                     ce = new CodeVariableReferenceExpression("auto_" + (uint)FileName.GetHashCode() + dataNode.id.ToString());
                     break;
                 default:
-                    Console.WriteLine("DataTypeId: " + dataNode.type + " cannot be transformed.");
+                    Debug.Fail("DataTypeId: " + dataNode.type + " cannot be transformed.");
                     break;
             }
 
@@ -167,7 +168,7 @@ namespace GryphonSharpTranspiler
                         func.Statements.Add(new CodeMethodReturnStatement(ResolveDataToCodeExpression(ScriptBody.dataNodes[currentNode.inputs[0]])));
                         break;
                     default:
-                        Console.WriteLine("NodeTypeId " + currentNode.type + " cannot be transformed.");
+                        Debug.Fail("NodeTypeId " + currentNode.type + " cannot be transformed.");
                         break;
                 }
                 currentNode = ScriptBody.codeNodes[currentNode.execution];

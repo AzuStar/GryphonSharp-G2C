@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using GSharp.System.GScript;
+using GSharp.GSIL.GScript;
 using Newtonsoft.Json;
 
 namespace GryphonSharpTranspiler
@@ -12,7 +12,6 @@ namespace GryphonSharpTranspiler
         {
             if (!File.Exists(GSProjFile)) throw new Exception("File doesn't exist:" + GSProjFile);
             String projectLocation = Directory.GetParent(GSProjFile).FullName;
-            Console.WriteLine(projectLocation);
             GSProject project = JsonConvert.DeserializeObject<GSProject>(File.ReadAllText(GSProjFile));
             project.root = Directory.GetParent(GSProjFile).FullName;
             project.src = Path.GetFullPath(project.root + "/" + project.src);

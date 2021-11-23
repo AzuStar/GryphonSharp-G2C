@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 #nullable enable
 
-namespace GSharp.System.GNode
+namespace GSharp.GSIL.GCode
 {
     public sealed class Node
     {
@@ -11,7 +11,10 @@ namespace GSharp.System.GNode
         public String? target;
         public int execution = -1;
         public List<int>? inputs;
-        public List<object>? outputs;
+        public List<int>? outputs;
+
+        // data-only references
+        public int dataReference;
 
     }
 

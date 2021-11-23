@@ -1,4 +1,4 @@
-namespace GSharp.System.GScript
+namespace GSharp.GSIL.GScript
 {
     public enum Type : int
     {

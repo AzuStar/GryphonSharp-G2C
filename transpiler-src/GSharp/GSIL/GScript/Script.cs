@@ -1,15 +1,13 @@
 using System;
 using System.Collections.Generic;
-using GSharp.System.GNode;
 
-namespace GSharp.System.GScript
+namespace GSharp.GSIL.GScript
 {
     public sealed class Script
     {   
         public Schema schema;
-        public Dictionary<int, Node> code;
-
-
+        public Dictionary<int, GData.Node> dataNodes;
+        public Dictionary<int, GCode.Node> codeNodes;
         
     }
 

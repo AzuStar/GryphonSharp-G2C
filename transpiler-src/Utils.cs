@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace GryphonSharpTranspiler
 {
@@ -22,6 +24,13 @@ namespace GryphonSharpTranspiler
             {
                 listToPopulate.Add(fil);
             }
+        }
+        /// <summary>
+        /// Converts existing collection to an array.
+        /// </summary>
+        public static T[] CollectionToArray<T>(this ICollection collection)
+        {
+            return collection.Cast<T>().ToArray();
         }
     }
 }

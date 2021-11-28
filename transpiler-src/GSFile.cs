@@ -1,6 +1,7 @@
 using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -100,7 +101,7 @@ namespace GryphonSharpTranspiler
 
         private CodeParameterDeclarationExpression ResolveDataToParameterExpression(GSharp.GSIL.GData.Node dataNode)
         {
-            if(dataNode.type==0) return null;
+            if (dataNode.type == 0) return null;
             // this can only be type 1
             CodeParameterDeclarationExpression cpd = new CodeParameterDeclarationExpression();
             cpd.Type = new CodeTypeReference(dataNode.vmType);
@@ -207,7 +208,31 @@ namespace GryphonSharpTranspiler
                         if (currentNode.inputs == null) break;
                         GSharp.GSIL.GData.Node funcReturn = ScriptBody.dataNodes[currentNode.inputs[0]];
                         func.Statements.Add(new CodeMethodReturnStatement(ResolveDataToCodeExpression(funcReturn)));
-                        func.ReturnType = func.ReturnType = new CodeTypeReference(funcReturn.vmType);
+                        func.ReturnType = new CodeTypeReference(funcReturn.vmType);
+                        break;
+                    case GSharp.GSIL.GCode.Type.branch:
+                        CodeMemberMethod trueCollection = new CodeMemberMethod();
+                        // trueCollection.Attributes = MemberAttributes.Private | MemberAttributes.Static;
+                        CodeMemberMethod falseCollection = new CodeMemberMethod();
+                        CodeConditionStatement ccs;
+                        FunctionBuilder(trueCollection, ScriptBody.codeNodes[currentNode.outputs[0]]);
+                        if (currentNode.outputs.Count > 1)
+                        {
+                            FunctionBuilder(falseCollection, ScriptBody.codeNodes[currentNode.outputs[1]]);
+                            ccs = new CodeConditionStatement(
+                                ResolveDataToCodeExpression(ScriptBody.dataNodes[currentNode.inputs[0]]),
+                                trueCollection.Statements.CollectionToArray<CodeStatement>(),
+                                falseCollection.Statements.CollectionToArray<CodeStatement>()
+                            );
+                        }
+                        else
+                        {
+                            ccs = new CodeConditionStatement(
+                                ResolveDataToCodeExpression(ScriptBody.dataNodes[currentNode.inputs[0]]),
+                                trueCollection.Statements.CollectionToArray<CodeStatement>()
+                            );
+                        }
+                        func.Statements.Add(ccs);
                         break;
                     default:
                         Debug.Fail("NodeTypeId " + currentNode.type + " cannot be transformed.");

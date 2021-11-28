@@ -9,7 +9,7 @@ namespace transpiler_tests
     {
         static void Main(string[] args)
         {
-            IGSProject proj = TranspilerAPI.LoadProject(Path.GetFullPath("../GryphonSharp-Samples/TestExample/Test.gsproj"));
+            IGSProject proj = TranspilerAPI.LoadProject(Path.GetFullPath("../GryphonSharp-Samples/BranchExample/BranchExample.gsproj"));
             
             proj.TranspileScripts();
             // TranspilerAPI.TranspileScripts("./Samples/GSProject.gsproj");

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using GSharp.GSIL.GScript;
+using GSharp.IL.GScript;
 using Newtonsoft.Json;
 
 namespace GryphonSharpTranspiler

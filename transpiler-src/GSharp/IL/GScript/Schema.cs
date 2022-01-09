@@ -1,4 +1,4 @@
-namespace GSharp.GSIL.GScript
+namespace GSharp.IL.GScript
 {
     public class Schema
     {

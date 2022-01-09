@@ -10,9 +10,9 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Channels;
-using GSharp.GSIL.GCode;
-using GSharp.GSIL.GData;
-using GSharp.GSIL.GScript;
+using GSharp.IL.GCode;
+using GSharp.IL.GData;
+using GSharp.IL.GScript;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -60,9 +60,9 @@ namespace GryphonSharpTranspiler
             CodeTypeDeclaration mainClass = new CodeTypeDeclaration(FileName);
             ns.Types.Add(mainClass);
 
-            IEnumerable<KeyValuePair<int, GSharp.GSIL.GCode.Node>> funcEntries = ScriptBody.codeNodes.Where((kv) => kv.Value.type == GSharp.GSIL.GCode.Type.executionEnter);
+            IEnumerable<KeyValuePair<int, GSharp.IL.GCode.Node>> funcEntries = ScriptBody.codeNodes.Where((kv) => kv.Value.type == GSharp.IL.GCode.Type.executionEnter);
 
-            IEnumerable<KeyValuePair<int, GSharp.GSIL.GCode.Node>> codeEntry = funcEntries.Where((kv) => kv.Value.target == "Main"); // first doesnt work, dont touch
+            IEnumerable<KeyValuePair<int, GSharp.IL.GCode.Node>> codeEntry = funcEntries.Where((kv) => kv.Value.target == "Main"); // first doesnt work, dont touch
 
             funcEntries = funcEntries.Where((kv) => kv.Value.target != "Main");
 
@@ -70,14 +70,14 @@ namespace GryphonSharpTranspiler
             {
                 CodeEntryPointMethod entry = new CodeEntryPointMethod();
 
-                GSharp.GSIL.GCode.Node currentNode = codeEntry.First().Value;
+                GSharp.IL.GCode.Node currentNode = codeEntry.First().Value;
 
                 FunctionBuilder(entry, currentNode);
 
                 mainClass.Members.Add(entry);
             }
 
-            foreach (KeyValuePair<int, GSharp.GSIL.GCode.Node> kv in funcEntries)
+            foreach (KeyValuePair<int, GSharp.IL.GCode.Node> kv in funcEntries)
             {
                 CodeMemberMethod func = new CodeMemberMethod();
                 func.Attributes = MemberAttributes.Static | MemberAttributes.Public;
@@ -99,7 +99,7 @@ namespace GryphonSharpTranspiler
             return srcText;
         }
 
-        private CodeParameterDeclarationExpression ResolveDataToParameterExpression(GSharp.GSIL.GData.Node dataNode)
+        private CodeParameterDeclarationExpression ResolveDataToParameterExpression(GSharp.IL.GData.Node dataNode)
         {
             if (dataNode.type == 0) return null;
             // this can only be type 1
@@ -108,16 +108,16 @@ namespace GryphonSharpTranspiler
             cpd.Name = "auto_" + (uint)FileName.GetHashCode() + dataNode.id.ToString();
             return cpd;
         }
-        private CodeExpression ResolveDataToCodeExpression(GSharp.GSIL.GData.Node dataNode)
+        private CodeExpression ResolveDataToCodeExpression(GSharp.IL.GData.Node dataNode)
         {
             CodeExpression ce = null;
             switch (dataNode.type)
             {
-                case GSharp.GSIL.GData.Type.primitiveValue:
+                case GSharp.IL.GData.Type.primitiveValue:
                     ce = new CodePrimitiveExpression(dataNode.value);
                     dataNode.vmType = dataNode.value.GetType();
                     break;
-                case GSharp.GSIL.GData.Type.localValue:
+                case GSharp.IL.GData.Type.localValue:
                     if (MatchedExpressions.ContainsKey(dataNode.id))
                     {
                         ce = MatchedExpressions[dataNode.id];
@@ -134,14 +134,14 @@ namespace GryphonSharpTranspiler
 
             return ce;
         }
-        private GSharp.GSIL.GCode.Node FunctionBuilder(CodeMemberMethod func, GSharp.GSIL.GCode.Node firstNode)
+        private GSharp.IL.GCode.Node FunctionBuilder(CodeMemberMethod func, GSharp.IL.GCode.Node firstNode)
         {
-            GSharp.GSIL.GCode.Node currentNode = firstNode;
+            GSharp.IL.GCode.Node currentNode = firstNode;
             while (true)
             {
                 switch (currentNode.type)
                 {
-                    case GSharp.GSIL.GCode.Type.executionEnter:
+                    case GSharp.IL.GCode.Type.executionEnter:
                         // SECTION INCOMPLETE
                         if (currentNode.outputs == null) break;
                         foreach (int key in currentNode.outputs)
@@ -149,7 +149,7 @@ namespace GryphonSharpTranspiler
                             func.Parameters.Add(ResolveDataToParameterExpression(ScriptBody.dataNodes[key]));
                         }
                         break;
-                    case GSharp.GSIL.GCode.Type.invokeOperatorCall:
+                    case GSharp.IL.GCode.Type.invokeOperatorCall:
                         CodeBinaryOperatorExpression cbo = new CodeBinaryOperatorExpression();
                         cbo.Operator = OperatorType.String2BinaryOperator(currentNode.target);
                         cbo.Left = ResolveDataToCodeExpression(ScriptBody.dataNodes[currentNode.inputs[0]]);
@@ -169,9 +169,9 @@ namespace GryphonSharpTranspiler
                         ScriptBody.dataNodes[currentNode.outputs[0]].vmType = ScriptBody.dataNodes[currentNode.outputs[0]].vmType;
                         MatchedExpressions.Add(currentNode.outputs[0], cbo);
                         break;
-                    case GSharp.GSIL.GCode.Type.invokeStaticCall:
+                    case GSharp.IL.GCode.Type.invokeStaticCall:
                     // SECTION INCOMPLETE
-                    case GSharp.GSIL.GCode.Type.invokeInstanceCall:
+                    case GSharp.IL.GCode.Type.invokeInstanceCall:
                         // SECTION INCOMPLETE
                         // collect any arguments
                         List<CodeExpression> inputs = new List<CodeExpression>();
@@ -182,7 +182,7 @@ namespace GryphonSharpTranspiler
                         CodeMethodInvokeExpression call;
                         CodeTypeReferenceExpression refExpr;
 
-                        if (currentNode.type == GSharp.GSIL.GCode.Type.invokeStaticCall)
+                        if (currentNode.type == GSharp.IL.GCode.Type.invokeStaticCall)
                         {
                             refExpr = new CodeTypeReferenceExpression(currentNode.reference);
                         }
@@ -203,14 +203,14 @@ namespace GryphonSharpTranspiler
                         else
                             func.Statements.Add(call);
                         break;
-                    case GSharp.GSIL.GCode.Type.executionExit:
+                    case GSharp.IL.GCode.Type.executionExit:
                         // SECTION INCOMPLETE
                         if (currentNode.inputs == null) break;
-                        GSharp.GSIL.GData.Node funcReturn = ScriptBody.dataNodes[currentNode.inputs[0]];
+                        GSharp.IL.GData.Node funcReturn = ScriptBody.dataNodes[currentNode.inputs[0]];
                         func.Statements.Add(new CodeMethodReturnStatement(ResolveDataToCodeExpression(funcReturn)));
                         func.ReturnType = new CodeTypeReference(funcReturn.vmType);
                         break;
-                    case GSharp.GSIL.GCode.Type.branch:
+                    case GSharp.IL.GCode.Type.branch:
                         CodeMemberMethod trueCollection = new CodeMemberMethod();
                         // trueCollection.Attributes = MemberAttributes.Private | MemberAttributes.Static;
                         CodeMemberMethod falseCollection = new CodeMemberMethod();

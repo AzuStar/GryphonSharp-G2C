@@ -1,4 +1,4 @@
-namespace GSharp.GSIL.GCode
+namespace GSharp.IL.GCode
 {
     /// <summary>
     /// Dont change numbers after 1.0 release as those will play role of backwards campatibility
@@ -46,7 +46,7 @@ namespace GSharp.GSIL.GCode
         /// <summary>
         /// Loop is a locked section that will continue execution in <see cref="Node.outputs"/>
         /// </summary>
-        loopUNDEFINED = 5,
+        loop = 5,
         /// <summary>
         /// Evaluates boolean in <see cref="Node.inputs"/> and executes either branch of <see cref="Node.outputs"/> at index 0 if condition is TRUE or branch at index 1 if condition is FALSE.
         /// </summary>

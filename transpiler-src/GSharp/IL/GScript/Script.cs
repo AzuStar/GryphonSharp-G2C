@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace GSharp.GSIL.GScript
+namespace GSharp.IL.GScript
 {
     public sealed class Script
     {

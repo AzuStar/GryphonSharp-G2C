@@ -1,4 +1,4 @@
-namespace GSharp.GSIL.GData
+namespace GSharp.IL.GData
 {
     public enum Type : int
     {

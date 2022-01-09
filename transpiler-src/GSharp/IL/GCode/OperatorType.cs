@@ -1,6 +1,6 @@
 using System.CodeDom;
 
-namespace GSharp.GSIL.GCode
+namespace GSharp.IL.GCode
 {
     public static class OperatorType
     {

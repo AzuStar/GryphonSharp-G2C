@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 #nullable enable
 
-namespace GSharp.GSIL.GData
+namespace GSharp.IL.GData
 {
     public sealed class Node
     {   

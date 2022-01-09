@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 #nullable enable
 
-namespace GSharp.GSIL.GCode
+namespace GSharp.IL.GCode
 {
     public sealed class Node
     {

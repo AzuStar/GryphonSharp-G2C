@@ -15,7 +15,7 @@ namespace GSharp.IL.GData
         /// </code><br/>
         /// return of external call; in example below <i>return</i><code>
         /// public static void main(String[] args){
-        /// var return = Math.Sqrt(9);
+        /// var ret = Math.Sqrt(9);
         /// }  
         /// </code><br/>
         /// </summary> 

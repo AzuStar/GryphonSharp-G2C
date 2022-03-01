@@ -52,7 +52,7 @@ namespace GSharp.IL.GCode
         /// </summary>
         branch = 6,
         /// <summary>
-        /// The exit node of the script.<br/>
+        /// The exit node of the function.<br/>
         /// Returns from the function with values of <see cref="Node.inputs"/>.<br/>
         /// </summary> 
         executionExit = 100,
